@@ -1,0 +1,2897 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IITK Alumni Portal - Enhanced Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #b04b34;
+            --primary-light: #e67e63;
+            --primary-dark: #8a3c2a;
+            --secondary-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --light-color: #f8f9fa;
+            --dark-color: #1a1a1a;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --sidebar-width: 280px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--secondary-color);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== LEFT SIDEBAR MENU ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            padding-top: 30px;
+            transition: width var(--transition-speed);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 25px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            text-align: center; /* Center align the logo */
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the logo */
+            gap: 15px;
+        }
+
+        .institute-logo {
+            height: 100px; /* Increased logo size */
+            width: auto;
+        }
+
+        /* Remove institute name and subtitle */
+        .institute-name {
+            display: none;
+        }
+
+        .institute-subtitle {
+            display: none;
+        }
+
+        .nav-menu {
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--primary-color);
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+        }
+
+        .nav-item:hover::before {
+            transform: translateX(0);
+        }
+
+        .nav-item:hover {
+            background-color: rgba(176, 75, 52, 0.08);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: rgba(176, 75, 52, 0.12);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-item.active::before {
+            transform: translateX(0);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-label {
+            font-size: 15px;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            padding: 0 25px;
+            font-size: 12px;
+            color: #888;
+            text-align: center; /* Center footer text */
+        }
+
+        /* ===== MAIN CONTENT AREA ===== */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            transition: margin-left var(--transition-speed);
+        }
+
+        /* Top Header */
+        .top-header {
+            background-color: white;
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 990;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .date-display {
+            font-size: 14px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 300px;
+            font-size: 14px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(176, 75, 52, 0.1);
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-bell {
+            position: relative;
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notification-bell:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .user-profile:hover {
+            background: #e9ecef;
+            border-color: #ddd;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .profile-role {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* ===== VIDEO HERO SECTION ===== */
+        .video-hero {
+            position: relative;
+            height: 650px; /* Increased height */
+            overflow: hidden;
+            margin: 0 40px 30px; /* Increased bottom margin */
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.2) 0%, rgba(44, 62, 80, 0.4) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            color: white;
+            text-align: center;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .hero-title {
+            font-size: 4rem; /* Increased size */
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem; /* Increased size */
+            font-weight: 400;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .cta-button {
+            padding: 18px 35px; /* Increased padding */
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 5px 20px rgba(176, 75, 52, 0.4);
+        }
+
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(176, 75, 52, 0.5);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ===== DASHBOARD CONTENT ===== */
+        .dashboard-content {
+            padding: 0 40px 30px;
+        }
+
+        /* ===== STATS OVERVIEW ===== */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 0 40px;
+
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card:nth-child(1) {
+            border-left-color: #b04b34;
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: #3498db;
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: #27ae60;
+        }
+
+        .stat-card:nth-child(4) {
+            border-left-color: #f39c12;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        /* 统一所有统计图标的背景颜色 */
+        .icon-1,
+        .icon-2,
+        .icon-3,
+        .icon-4 {
+            background: linear-gradient(135deg, #b04b34, #e67e63);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--secondary-color);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-trend {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: #e74c3c;
+        }
+
+        /* ===== MAIN DASHBOARD GRID ===== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
+        /* ===== DASHBOARD CARDS ===== */
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+        }
+
+        .dashboard-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .card-action-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .card-action-btn:hover {
+            color: var(--primary-color);
+            background: rgba(176, 75, 52, 0.1);
+        }
+
+        /* Card Specific Styles */
+        .reunion-highlight-card {
+            grid-column: span 4;
+            background: linear-gradient(135deg, #fff5f3, #fff);
+            border: 2px solid var(--primary-color);
+        }
+
+        .upcoming-events-card {
+            grid-column: span 5;
+        }
+
+        .quick-actions-card {
+            grid-column: span 3;
+        }
+
+        /* NEW: Dean's Message Card */
+        .dean-message-card {
+            grid-column: span 6;
+            height: 320px;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dean-message-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(176, 75, 52, 0.05), rgba(176, 75, 52, 0.1));
+            border-radius: 0 0 0 100px;
+            z-index: 0;
+        }
+
+        .dean-content {
+            display: flex;
+            gap: 25px;
+            flex: 1;
+            overflow: hidden;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* UPDATED: Dean Profile with Rectangular Image */
+        .dean-profile {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 180px;
+            padding-top: 5px;
+        }
+
+        /* UPDATED: Rectangular Image */
+        .dean-img {
+            width: 160px;
+            height: 200px;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            /* Removed border-radius for rectangular shape */
+        }
+
+        /* Removed dean-name, dean-title, and dean-quote styles as requested */
+
+        .dean-message {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .dean-message::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .dean-message::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .dean-message::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .dean-message::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .message-heading {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-heading i {
+            color: var(--primary-color);
+        }
+
+        .message-text {
+            color: #444;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .message-text:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-highlight {
+            background: rgba(176, 75, 52, 0.08);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .dean-signature {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .signature-name {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 3px;
+        }
+
+        .signature-title {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .alumni-network-card {
+            grid-column: span 6;
+            height: 320px;
+        }
+
+        /* Style for the merged Activity & Announcements Card */
+        .recent-activity-announcements-card {
+            grid-column: span 12;
+            margin-top: 0;
+            height: 380px;
+        }
+
+        /* IITK Reunion 2025 Highlight Card - Updated with Reunion List */
+        .reunion-hero {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .reunion-icon {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .reunion-year {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+        }
+
+        .reunion-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .reunion-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .reunion-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .reunion-feature i {
+            color: var(--primary-color);
+            margin-top: 2px;
+            font-size: 0.9rem;
+        }
+
+        /* NEW: Reunion List Section */
+        .reunion-list-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .reunion-list-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reunion-list-title i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .reunion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reunion-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        .reunion-list-item:hover {
+            background: rgba(176, 75, 52, 0.05);
+            transform: translateX(3px);
+        }
+
+        .reunion-batch {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .reunion-dates {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .reunion-milestone {
+            font-size: 0.75rem;
+            background: rgba(176, 75, 52, 0.1);
+            color: var(--primary-color);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* MAIN CONTENT AREA FOR REUNION CARD */
+        .reunion-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Custom scrollbar for reunion content */
+        .reunion-content::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .reunion-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .reunion-content::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .reunion-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .reunion-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(176, 75, 52, 0.2);
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+
+        .reunion-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(176, 75, 52, 0.3);
+        }
+
+        /* FIXED: Upcoming Events Card - Better height management */
+        .upcoming-events-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .events-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            min-height: 0;
+        }
+
+        /* Custom scrollbar for events container */
+        .events-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .events-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .events-container::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .events-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .event-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        /* Remove margin from last event card to prevent extra space */
+        .event-card:last-child {
+            margin-bottom: 0;
+        }
+
+        /* FIXED: "FEATURED" label styling - now properly visible */
+        .event-card.reunion-special {
+            background: linear-gradient(135deg, #fff5f3, #fff);
+            border-left: 4px solid #ff6b4a;
+            border-top: 2px solid var(--primary-color);
+            padding-top: 22px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .event-card.reunion-special::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 12px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 9px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .event-card:hover {
+            background: rgba(176, 75, 52, 0.05);
+            transform: translateX(3px);
+        }
+
+        .event-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .event-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 4px;
+        }
+
+        .event-type {
+            display: inline-block;
+            background: rgba(176, 75, 52, 0.1);
+            color: var(--primary-color);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .event-description {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Quick Actions Card - Fixed height alignment */
+        .quick-actions-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .actions-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Custom scrollbar for actions grid */
+        .actions-grid::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .actions-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .actions-grid::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .actions-grid::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            transition: all 0.3s;
+        }
+
+        .action-item:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .action-icon {
+            font-size: 1.1rem;
+            width: 22px;
+            text-align: center;
+        }
+
+        .action-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Alumni Network Card */
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .network-stat {
+            text-align: center;
+            padding: 18px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .network-stat .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .network-stat .label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Announcements Container */
+        .announcements-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        /* Custom scrollbar for announcements */
+        .announcements-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .announcements-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .announcements-container::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .announcements-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .announcement-item {
+            padding: 14px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .announcement-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: var(--secondary-color);
+        }
+
+        .announcement-content {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .announcement-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #888;
+        }
+
+        /* NEW: Enhanced design improvements */
+        .register-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .register-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .event-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .status-upcoming {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .status-live {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .status-featured {
+            background: rgba(176, 75, 52, 0.1);
+            color: var(--primary-color);
+        }
+
+        /* ===== STORIES OF IMPACT SLIDER ===== */
+        .stories-slider-card {
+            grid-column: span 12;
+            margin-top: 20px;
+            height: 500px;
+        }
+
+        .stories-slider-container {
+            position: relative;
+            flex: 1;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .slider-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            padding: 25px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-content {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .slide-subtitle {
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slide-subtitle i {
+            font-size: 0.9rem;
+        }
+
+        .slide-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .slide-highlight {
+            background: rgba(176, 75, 52, 0.08);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            margin-top: 20px;
+            font-style: italic;
+            color: #444;
+        }
+
+        .slide-image {
+            flex: 0 0 300px;
+            height: 320px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .slide-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .slide:hover .slide-image img {
+            transform: scale(1.05);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            border: 2px solid var(--primary-light);
+        }
+
+        .slider-nav:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-nav.prev {
+            left: 15px;
+        }
+
+        .slider-nav.next {
+            right: 15px;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(176, 75, 52, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slider-dot.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.3);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: var(--primary-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* FIXED: Better alignment for all cards in the grid */
+        .dashboard-grid {
+            align-items: stretch;
+        }
+
+        /* Responsive Design - Mobile First Approach */
+        @media (max-width: 1400px) {
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 15px;
+            }
+
+            .reunion-highlight-card {
+                grid-column: span 3;
+            }
+
+            .upcoming-events-card {
+                grid-column: span 3;
+            }
+
+            .quick-actions-card {
+                grid-column: span 3;
+            }
+
+            .dean-message-card {
+                grid-column: span 6;
+            }
+
+            .alumni-network-card {
+                grid-column: span 6;
+            }
+
+            .recent-activity-announcements-card {
+                grid-column: span 6;
+            }
+
+            .stories-slider-card {
+                grid-column: span 6;
+            }
+
+            .video-hero {
+                height: 600px;
+            }
+
+            .hero-title {
+                font-size: 3.2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+
+            .reunion-features {
+                grid-template-columns: 1fr;
+            }
+
+            .dean-content {
+                gap: 20px;
+            }
+            
+            .dean-profile {
+                width: 160px;
+            }
+            
+            .dean-img {
+                width: 140px;
+                height: 180px;
+            }
+
+            .slide {
+                padding: 20px;
+                gap: 25px;
+            }
+            
+            .slide-image {
+                flex: 0 0 250px;
+                height: 280px;
+            }
+            
+            .slide-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 280px;
+                transform: translateX(-100%);
+                transition: transform var(--transition-speed);
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .video-hero,
+            .dashboard-content {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .dashboard-card {
+                height: auto;
+                min-height: 400px;
+            }
+
+            .dean-message-card,
+            .alumni-network-card {
+                height: auto;
+                min-height: 320px;
+            }
+
+            .recent-activity-announcements-card {
+                height: auto;
+                min-height: 350px;
+            }
+
+            .stories-slider-card {
+                height: auto;
+                min-height: 450px;
+            }
+            
+            .slide {
+                flex-direction: column;
+                padding: 25px;
+                gap: 25px;
+                justify-content: flex-start;
+            }
+            
+            .slide-content {
+                padding-right: 0;
+            }
+            
+            .slide-image {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 400px;
+                height: 250px;
+            }
+            
+            .slider-nav {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .reunion-highlight-card,
+            .upcoming-events-card,
+            .quick-actions-card,
+            .dean-message-card,
+            .alumni-network-card,
+            .recent-activity-announcements-card,
+            .stories-slider-card {
+                grid-column: span 1;
+            }
+
+            .search-input {
+                display: none;
+            }
+
+            .mobile-search {
+                display: block;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .video-hero {
+                height: 500px;
+                margin: 0 15px 15px;
+                border-radius: 12px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .network-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .date-display {
+                align-self: flex-start;
+                font-size: 11px;
+            }
+
+            .page-title {
+                font-size: 16px;
+            }
+
+            .top-header {
+                padding: 10px 15px;
+            }
+
+            .dashboard-content {
+                padding: 0 15px 20px;
+            }
+
+            .event-meta {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .reunion-title {
+                font-size: 1.3rem;
+            }
+
+            .reunion-year {
+                font-size: 1.1rem;
+            }
+
+            .reunion-icon {
+                font-size: 1.8rem;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .reunion-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .reunion-dates {
+                align-self: flex-start;
+            }
+
+            .reunion-milestone {
+                align-self: flex-start;
+            }
+
+            .event-card.reunion-special::before {
+                top: -6px;
+                right: 10px;
+                font-size: 8px;
+                padding: 2px 6px;
+            }
+
+            /* Dean Message Card Responsive */
+            .dean-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .dean-profile {
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .dean-img {
+                width: 120px;
+                height: 150px;
+                margin-bottom: 0;
+            }
+
+            /* Stories Slider Responsive */
+            .stories-slider-card {
+                height: auto;
+                min-height: 400px;
+                margin-top: 15px;
+            }
+            
+            .slide {
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 1.2rem;
+            }
+            
+            .slide-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .slide-text {
+                font-size: 0.9rem;
+            }
+            
+            .slide-highlight {
+                padding: 12px;
+            }
+            
+            .slide-overlay {
+                padding: 12px;
+                font-size: 0.8rem;
+            }
+            
+            .slider-nav {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .video-hero {
+                height: 400px;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .dashboard-card {
+                padding: 18px 12px;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .reunion-title {
+                font-size: 1.1rem;
+            }
+
+            .reunion-year {
+                font-size: 1rem;
+            }
+
+            .reunion-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .header-right {
+                gap: 10px;
+            }
+
+            .notification-bell {
+                font-size: 16px;
+            }
+
+            .user-profile {
+                padding: 5px 8px;
+            }
+
+            .profile-img {
+                width: 32px;
+                height: 32px;
+            }
+
+            .stats-overview {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .institute-logo {
+                height: 60px; /* Smaller logo on mobile */
+            }
+            
+            .dean-img {
+                width: 100px;
+                height: 125px;
+            }
+
+            .stories-slider-card {
+                padding: 15px;
+            }
+            
+            .slide {
+                padding: 15px;
+            }
+            
+            .slide-image {
+                height: 200px;
+            }
+            
+            .slide-title {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+            
+            .slider-dots {
+                bottom: 15px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .video-hero {
+                height: 350px;
+            }
+
+            .hero-title {
+                font-size: 1.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.85rem;
+            }
+
+            .cta-button {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .dashboard-card {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- ===== LEFT SIDEBAR MENU ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="CL_logo.png"
+                    alt="IITK Logo" class="institute-logo">
+                <!-- Removed institute name and subtitle -->
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+
+            <a href="#" class="nav-item active">
+                <i class="fas fa-chart-line nav-icon"></i>
+                <span class="nav-label">Dashboard</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-hand-holding-heart nav-icon"></i>
+                <span class="nav-label">Giving Back</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-donate nav-icon"></i>
+                <span class="nav-label">My Contributions</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-lightbulb nav-icon"></i>
+                <span class="nav-label">Initiated Program</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-bullhorn nav-icon"></i>
+                <span class="nav-label">Noticeboard</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-calendar-check nav-icon"></i>
+                <span class="nav-label">Events</span>
+                <span class="nav-badge">3</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-comment-dots nav-icon"></i>
+                <span class="nav-label">Give Feedback</span>
+            </a>
+        
+            <a href="#" class="nav-item">
+                <i class="fas fa-gear nav-icon"></i>
+                <span class="nav-label">Settings</span>
+            </a>
+        
+        </nav>
+        
+
+        <div class="sidebar-footer">
+            <p>© 2025 IIT Kanpur</p>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT AREA ===== -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <div class="page-title">Alumni Dashboard</div>
+                <div class="date-display" id="currentDate">Saturday, Dec 14, 2025</div>
+            </div>
+
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search alumni, events, resources...">
+                </div>
+
+                <div class="header-actions">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">5</span>
+                    </div>
+
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="profile-img">
+                        <div class="profile-info">
+                            <div class="profile-name">Dr. Rajesh Verma</div>
+                            <div class="profile-role">Class of 2005 | Alumni</div>
+                        </div>
+                        <i class="fas fa-chevron-down" style="color: #888;"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Video Hero Section -->
+        <section class="video-hero">
+            <video autoplay muted loop playsinline class="video-background">
+                <source src="video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to <br> IIT Kanpur Alumni Portal</h1>
+               
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon icon-1">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">45K+</div>
+                    <div class="stat-label">Total Alumni</div>
+                    <div class="stat-trend trend-up">+3.2% growth</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-2">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">65+</div>
+                    <div class="stat-label">Countries</div>
+                    <div class="stat-trend trend-up">Global Reach</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-3">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">Upcoming Events</div>
+                    <div class="stat-trend trend-up">+8 this month</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-4">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">850+</div>
+                    <div class="stat-label">Active Mentors</div>
+                    <div class="stat-trend trend-up">+45 this month</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="dashboard-grid">
+                <!-- IITK Reunion 2025 Highlight Card WITH REUNION LIST -->
+                <div class="dashboard-card reunion-highlight-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-star"></i> Reunion</h3>
+                        <div class="card-actions">
+                            <button class="card-action-btn"><i class="fas fa-info-circle"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="reunion-content">
+                        <div class="reunion-hero">
+                            <div class="reunion-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+
+                            <div class="reunion-year">
+                                Alumni Reunion 
+                            </div>
+                            <div class="reunion-description">
+                                Join your batchmates for a memorable weekend of networking, campus tours, and celebration
+                                at our beloved alma mater.
+                            </div>
+
+                            <div class="reunion-features">
+                                <div class="reunion-feature">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span>All Batches Welcome</span>
+                                </div>
+                                <div class="reunion-feature">
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Gala Dinner & Events</span>
+                                </div>
+                            </div>
+
+                            <!-- REUNION LIST SECTION ADDED HERE -->
+                            <div class="reunion-list-section">
+                                <div class="reunion-list-title">
+                                    <i class="fas fa-list-ol"></i> Upcoming Batch Reunions
+                                </div>
+                                <div class="reunion-list">
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 1986</div>
+                                        <div class="reunion-dates">Dec 18-21, 2025</div>
+                                        <div class="reunion-milestone">40th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 1991</div>
+                                        <div class="reunion-dates">Dec 24-26, 2025</div>
+                                        <div class="reunion-milestone">35th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 2000</div>
+                                        <div class="reunion-dates">Dec 26-29, 2025</div>
+                                        <div class="reunion-milestone">25th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 2011</div>
+                                        <div class="reunion-dates">Jan 2-4, 2026</div>
+                                        <div class="reunion-milestone">15th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 1976</div>
+                                        <div class="reunion-dates">Feb 6-8, 2026</div>
+                                        <div class="reunion-milestone">50th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 1990</div>
+                                        <div class="reunion-dates">Feb 13-15, 2026</div>
+                                        <div class="reunion-milestone">35th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 1966</div>
+                                        <div class="reunion-dates">Feb 22-25, 2026</div>
+                                        <div class="reunion-milestone">60th Reunion</div>
+                                    </div>
+                                    <div class="reunion-list-item">
+                                        <div class="reunion-batch">Class of 2015</div>
+                                        <div class="reunion-dates">Feb 27 - 1 March, 2026</div>
+                                        <div class="reunion-milestone">10th Reunion</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <!-- Upcoming Events Card - FIXED SCROLL ISSUE -->
+                <div class="dashboard-card upcoming-events-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-calendar-check"></i> Upcoming Events</h3>
+                        <div class="card-actions">
+                            <button class="card-action-btn"><i class="fas fa-plus"></i></button>
+                            <button class="card-action-btn"><i class="fas fa-ellipsis-h"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="events-container">
+                        <div class="event-card reunion-special">
+                            <div class="event-card-header">
+                                <div>
+                                    <div class="event-title">IITK Alumni Reunion 2025</div>
+                                </div>
+                                <button class="register-btn">Register</button>
+                            </div>
+                            <div class="event-description">
+                                The biggest alumni gathering of the year! Reconnect with old friends, visit the campus,
+                                and celebrate the IITK spirit.
+                            </div>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> IITK Campus</span>
+                                <span><i class="fas fa-user-friends"></i> All Batches</span>
+                                <span><i class="fas fa-clock"></i> Dec 26-29, 2025</span>
+                            </div>
+                        </div>
+
+                        <div class="event-card">
+                            <div class="event-card-header">
+                                <div>
+                                    <div class="event-title">Entrepreneurship Webinar</div>
+                                    <span class="event-type status-upcoming">Webinar</span>
+                                </div>
+                                <div style="color: var(--primary-color); font-weight: 600;">Free</div>
+                            </div>
+                            <div class="event-description">
+                                Learn from successful alumni entrepreneurs about startup funding, scaling, and
+                                innovation strategies.
+                            </div>
+                            <div class="event-meta">
+                                <span><i class="fas fa-video"></i> Virtual Event</span>
+                                <span><i class="fas fa-clock"></i> Jan 15, 2026 • 2 PM IST</span>
+                                <span><i class="fas fa-chalkboard-teacher"></i> Expert Panel</span>
+                            </div>
+                        </div>
+
+                        <div class="event-card">
+                            <div class="event-card-header">
+                                <div>
+                                    <div class="event-title">Career Advancement Workshop</div>
+                                    <span class="event-type status-upcoming">Workshop</span>
+                                </div>
+                                <button class="register-btn">Register</button>
+                            </div>
+                            <div class="event-description">
+                                Develop leadership skills and career strategies with industry experts and executive
+                                coaches.
+                            </div>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Delhi Center</span>
+                                <span><i class="fas fa-clock"></i> Jan 22, 2026 • Full Day</span>
+                                <span><i class="fas fa-certificate"></i> Certificate</span>
+                            </div>
+                        </div>
+
+                        <div class="event-card">
+                            <div class="event-card-header">
+                                <div>
+                                    <div class="event-title">Alumni-Student Mentorship Program</div>
+                                    <span class="event-type status-upcoming">Mentorship</span>
+                                </div>
+                                <button class="register-btn">Join</button>
+                            </div>
+                            <div class="event-description">
+                                Connect with current students and guide them through career choices and academic
+                                challenges.
+                            </div>
+                            <div class="event-meta">
+                                <span><i class="fas fa-users"></i> 100+ Participants</span>
+                                <span><i class="fas fa-clock"></i> Ongoing</span>
+                                <span><i class="fas fa-hourglass-half"></i> 6 Months</span>
+                            </div>
+                        </div>
+
+                        <div class="event-card">
+                            <div class="event-card-header">
+                                <div>
+                                    <div class="event-title">Networking Mixer: Bangalore Chapter</div>
+                                    <span class="event-type status-upcoming">Networking</span>
+                                </div>
+                                <button class="register-btn">RSVP</button>
+                            </div>
+                            <div class="event-description">
+                                Monthly networking event for Bangalore-based alumni to connect, share opportunities, and
+                                build professional relationships.
+                            </div>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Bangalore</span>
+                                <span><i class="fas fa-clock"></i> Jan 30, 2026 • 6 PM</span>
+                                <span><i class="fas fa-wine-glass-alt"></i> Drinks & Snacks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="dashboard-card quick-actions-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    </div>
+                    <div class="actions-grid">
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <div class="action-text">Register for Reunion</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <div class="action-text">Find Alumni</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="action-text">View Events</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="action-text">Career Support</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="action-text">Update Profile</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-donate"></i>
+                            </div>
+                            <div class="action-text">Make a Donation</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <div class="action-text">Share with Friends</div>
+                        </a>
+                        <a href="#" class="action-item">
+                            <div class="action-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="action-text">Help & Support</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Dean's Message Card (Replaces Institute Progress Card) -->
+                <div class="dashboard-card dean-message-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-quote-left"></i> Dean's Message</h3>
+                        <div class="card-actions">
+                            <button class="card-action-btn"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="dean-content">
+                        <!-- UPDATED: Dean Profile with Rectangular Image Only -->
+                        <div class="dean-profile">
+                            <img src="Amey Sir (1).png" alt="Prof. Amey Karkare" class="dean-img">
+                        </div>
+                        
+                        <div class="dean-message">
+                            <div class="message-heading"><i class="fas fa-globe-asia"></i> Welcome to Alumi Portal</div>
+                            
+                            <p class="message-text">The DoRA office plays a vital role in IIT Kanpur's success. It bridges the gap between the institute and its alumni, fostering strong connections. The mission is two-fold: to strengthen these bonds and secure resources to fuel the institute's long-term goals.</p>
+                            
+                            <div class="message-highlight">
+                                To professionalize alumni engagement, the institute established the IITK Development Foundation (IITK DF) in 2020, led by CEO Mr. Kapil Kaul. An extended arm of the DoRA office, IITK DF's team works with alumni, corporations, and philanthropists to raise funds.
+                            </div>
+                            
+                            <p class="message-text">We look forward to your feedback and suggestions as we continue to build a vibrant, connected, and supportive alumni community that contributes to IIT Kanpur's growth and excellence.</p>
+                            
+                            <div class="dean-signature">
+                                <div class="signature-name">Yours sincerely,</div>
+                                <div class="signature-name">Prof. Amey Karkare</div>
+                                <div class="signature-title">Dean of Resources & Alumni</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alumni Network Card -->
+                <div class="dashboard-card alumni-network-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-globe-asia"></i> Alumni All Over the World</h3>
+                       
+                    </div>
+
+                    <div class="network-stats">
+                        <div class="network-stat">
+                            <div class="value">5782</div>
+                            <div class="label">USA</div>
+                        </div>
+                        <div class="network-stat">
+                            <div class="value">12450</div>
+                            <div class="label">Other Countries</div>
+                        </div>
+                        <div class="network-stat">
+                            <div class="value">34758</div>
+                            <div class="label">India</div>
+                        </div>
+                        <div class="network-stat">
+                            <div class="value">189</div>
+                            <div class="label">Distinguished Alumni</div>
+                        </div>
+                       
+                    </div>
+
+                    
+                </div>
+
+                <!-- Recent Activity & Announcements Card -->
+                <div class="dashboard-card recent-activity-announcements-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-bullhorn"></i> Latest Announcements</h3>
+                        <div class="card-actions">
+                            <button class="card-action-btn"><i class="fas fa-sync-alt"></i></button>
+                            <button class="card-action-btn"><i class="fas fa-ellipsis-h"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="announcements-container">
+                        <!-- Announcement 1: Alumni Network Update -->
+                        <div class="announcement-item">
+                            <div class="announcement-title">Alumni Network Reaches 20,500+ Members</div>
+                            <div class="announcement-content">
+                                The IITK alumni community now spans 65+ countries. This global network includes over 800
+                                CXO-level leaders and 1,200+ entrepreneurs, strengthening the institute's ecosystem
+                                worldwide.
+                            </div>
+                            <div class="announcement-meta">
+                                <span><i class="fas fa-chart-line"></i> Network Growth</span>
+                                <span><i class="fas fa-globe-asia"></i> 65+ Countries</span>
+                            </div>
+                        </div>
+
+                        <!-- Announcement 2: Distinguished Alumni Awards -->
+                        <div class="announcement-item">
+                            <div class="announcement-title">Distinguished Alumni Awards 2025</div>
+                            <div class="announcement-content">
+                                Nominations are now open for the 2025 Distinguished Alumni Awards. Recognize alumni who
+                                have made exceptional contributions to their fields and society.
+                            </div>
+                            <div class="announcement-meta">
+                                <span><i class="fas fa-award"></i> Awards</span>
+                                <span><i class="fas fa-calendar"></i> Deadline: Jan 31, 2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Announcement 3: Research Collaboration -->
+                        <div class="announcement-item">
+                            <div class="announcement-title">IITK Research Collaboration Portal</div>
+                            <div class="announcement-content">
+                                New portal launched to connect alumni with faculty for research collaborations and
+                                industry partnerships. Submit your research interests today.
+                            </div>
+                            <div class="announcement-meta">
+                                <span><i class="fas fa-flask"></i> Research</span>
+                                <span><i class="fas fa-external-link-alt"></i> Portal Live</span>
+                            </div>
+                        </div>
+
+                        <!-- Announcement 4: Alumni Giving Day -->
+                        <div class="announcement-item">
+                            <div class="announcement-title">Annual Alumni Giving Day - March 2026</div>
+                            <div class="announcement-content">
+                                Mark your calendars for our Annual Alumni Giving Day. Your contributions support
+                                scholarships, infrastructure, and research at IITK.
+                            </div>
+                            <div class="announcement-meta">
+                                <span><i class="fas fa-donate"></i> Giving Day</span>
+                                <span><i class="fas fa-calendar-alt"></i> March 15, 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stories of Impact Slider Card -->
+                <div class="dashboard-card stories-slider-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-star"></i> Stories of Impact</h3>
+                       
+                    </div>
+                    
+                    <div class="stories-slider-container">
+                        <div class="slider-wrapper">
+                            <div class="slider-track" id="sliderTrack">
+                                <!-- Slide 1 -->
+                                <div class="slide">
+                                    <div class="slide-content">
+                                        
+                                        <h4 class="slide-title">Scholarship Program Creates 50+ First-Generation Graduates</h4>
+                                        <div class="slide-text">
+                                            Your support came at the right time. Because of you, I can continue my studies in Civil Engineering without adding more worry to my family.
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="slide-image">
+                                        <img src="Amipriya Anand (1).png" alt="Student receiving scholarship">
+                                        <div class="slide-overlay">Amipriya Anand</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="slide">
+                                    <div class="slide-content">
+                                      
+                                      
+                                        <div class="slide-text">
+                                            Thank You, Alumni!
+                                            This scholarship has been instrumental in helping me manage critical expenses.                                     </div>
+                                       
+                                    </div>
+                                    <div class="slide-image">
+                                        <img src="Vidhi Jain.png">
+                                        <div class="slide-overlay">Vidhi Jain</div>
+                                    </div>
+                                </div>
+                             
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Arrows -->
+                        <div class="slider-nav prev" id="prevSlide">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="slider-nav next" id="nextSlide">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <!-- Dots Indicator -->
+                        <div class="slider-dots" id="sliderDots">
+                            <span class="slider-dot active" data-slide="0"></span>
+                            <span class="slider-dot" data-slide="1"></span>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Current Date Display
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        mobileMenuToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('active');
+            mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function (event) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = mobileMenuToggle.contains(event.target);
+
+            if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Interactive functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+
+                // Close sidebar on mobile after clicking a link
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('active');
+                    mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+
+        // Card action buttons
+        document.querySelectorAll('.card-action-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const icon = this.querySelector('i').className;
+
+                if (icon.includes('sync-alt')) {
+                    alert('Refreshing announcements...');
+                    this.classList.add('fa-spin');
+                    setTimeout(() => {
+                        this.classList.remove('fa-spin');
+                    }, 1000);
+                } else if (icon.includes('plus')) {
+                    alert('Adding new event...');
+                } else if (icon.includes('download')) {
+                    alert('Downloading progress report...');
+                } else if (icon.includes('expand-alt')) {
+                    alert('Expanding network view...');
+                } else if (icon.includes('info-circle')) {
+                    alert('IITK Reunion 2025: Join us for a memorable weekend of reconnecting with batchmates and celebrating our alma mater.');
+                } else if (icon.includes('share-alt')) {
+                    alert('Sharing Dean\'s message...');
+                }
+            });
+        });
+
+        // Event cards interaction
+        document.querySelectorAll('.event-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (!e.target.closest('.event-card-header') && !e.target.classList.contains('register-btn')) {
+                    const title = this.querySelector('.event-title').textContent;
+                    alert(`Viewing details for: ${title}`);
+                }
+            });
+        });
+
+        // Register button interaction
+        document.querySelectorAll('.register-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const eventTitle = this.closest('.event-card').querySelector('.event-title').textContent;
+                alert(`Registering for: ${eventTitle}`);
+            });
+        });
+
+        // Reunion list items interaction
+        document.querySelectorAll('.reunion-list-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const batch = this.querySelector('.reunion-batch').textContent;
+                const dates = this.querySelector('.reunion-dates').textContent;
+                const milestone = this.querySelector('.reunion-milestone').textContent;
+                alert(`Viewing details for: ${batch}\nDates: ${dates}\nMilestone: ${milestone}`);
+            });
+        });
+
+        // Quick actions
+        document.querySelectorAll('.action-item').forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                const action = this.querySelector('.action-text').textContent;
+                alert(`Action: ${action}`);
+            });
+        });
+
+        // Reunion buttons
+        document.querySelectorAll('.reunion-btn, .cta-button').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                alert('Redirecting to IITK Reunion 2025 registration...');
+            });
+        });
+
+        // Notification bell
+        document.querySelector('.notification-bell').addEventListener('click', function () {
+            alert('You have 5 unread notifications:\n1. Reminder: Reunion registration deadline\n2. New message from Alumni Network\n3. Event registration confirmed\n4. Profile update requested\n5. New alumni in your area');
+        });
+
+        // User profile dropdown
+        document.querySelector('.user-profile').addEventListener('click', function () {
+            alert('Opening profile settings...');
+        });
+
+        // Video fallback
+        const video = document.querySelector('.video-background');
+        video.addEventListener('error', function () {
+            document.querySelector('.video-hero').style.background = "linear-gradient(135deg, #2c3e50, #1a1a1a)";
+            document.querySelector('.video-background').style.display = "none";
+        });
+
+        // ===== STORIES OF IMPACT SLIDER FUNCTIONALITY =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderTrack = document.getElementById('sliderTrack');
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            const prevBtn = document.getElementById('prevSlide');
+            const nextBtn = document.getElementById('nextSlide');
+            const pauseBtn = document.getElementById('sliderPauseBtn');
+            
+            let currentSlide = 0;
+            let slideInterval;
+            let isPlaying = true;
+            const totalSlides = slides.length;
+            
+            // Initialize slider
+            function initSlider() {
+                // Start autoplay
+                startAutoplay();
+                
+                // Set initial active dot
+                updateDots();
+                
+                // Add click events to dots
+                dots.forEach(dot => {
+                    dot.addEventListener('click', function() {
+                        const slideIndex = parseInt(this.getAttribute('data-slide'));
+                        goToSlide(slideIndex);
+                        resetAutoplay();
+                    });
+                });
+                
+                // Add click events to navigation buttons
+                prevBtn.addEventListener('click', function() {
+                    prevSlide();
+                    resetAutoplay();
+                });
+                
+                nextBtn.addEventListener('click', function() {
+                    nextSlide();
+                    resetAutoplay();
+                });
+                
+                // Add click event to pause/play button
+                if (pauseBtn) {
+                    pauseBtn.addEventListener('click', function() {
+                        toggleAutoplay();
+                    });
+                }
+                
+                // Pause on hover
+                const sliderContainer = document.querySelector('.stories-slider-container');
+                if (sliderContainer) {
+                    sliderContainer.addEventListener('mouseenter', function() {
+                        if (isPlaying) {
+                            pauseAutoplay();
+                        }
+                    });
+                    
+                    sliderContainer.addEventListener('mouseleave', function() {
+                        if (isPlaying) {
+                            startAutoplay();
+                        }
+                    });
+                }
+                
+                // Add keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowLeft') {
+                        prevSlide();
+                        resetAutoplay();
+                    } else if (e.key === 'ArrowRight') {
+                        nextSlide();
+                        resetAutoplay();
+                    } else if (e.key === ' ' || e.key === 'Spacebar') {
+                        e.preventDefault();
+                        toggleAutoplay();
+                    }
+                });
+            }
+            
+            // Go to specific slide
+            function goToSlide(index) {
+                if (index >= totalSlides) {
+                    currentSlide = 0;
+                } else if (index < 0) {
+                    currentSlide = totalSlides - 1;
+                } else {
+                    currentSlide = index;
+                }
+                
+                sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                updateDots();
+            }
+            
+            // Next slide
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                updateDots();
+            }
+            
+            // Previous slide
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+                updateDots();
+            }
+            
+            // Update active dot
+            function updateDots() {
+                dots.forEach((dot, index) => {
+                    if (index === currentSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Start autoplay
+            function startAutoplay() {
+                if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                isPlaying = true;
+                if (pauseBtn) {
+                    pauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+            }
+            
+            // Pause autoplay
+            function pauseAutoplay() {
+                if (slideInterval) clearInterval(slideInterval);
+                isPlaying = false;
+                if (pauseBtn) {
+                    pauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            }
+            
+            // Toggle autoplay
+            function toggleAutoplay() {
+                if (isPlaying) {
+                    pauseAutoplay();
+                } else {
+                    startAutoplay();
+                }
+            }
+            
+            // Reset autoplay timer
+            function resetAutoplay() {
+                if (isPlaying) {
+                    clearInterval(slideInterval);
+                    startAutoplay();
+                }
+            }
+            
+            // Initialize the slider
+            initSlider();
+            
+            // Animate slides on load
+            setTimeout(() => {
+                slides.forEach((slide, index) => {
+                    slide.style.opacity = '0';
+                    slide.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        slide.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                        slide.style.opacity = '1';
+                        slide.style.transform = 'translateY(0)';
+                    }, index * 100 + 300);
+                });
+            }, 1000);
+            
+            // Expand button functionality
+            const expandBtn = document.querySelector('.stories-slider-card .fa-expand-alt');
+            if (expandBtn && expandBtn.closest('.card-action-btn')) {
+                expandBtn.closest('.card-action-btn').addEventListener('click', function() {
+                    alert('Opening Stories of Impact in full view...');
+                });
+            }
+        });
+
+        // Animate progress bars on load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animate dean's message card
+            const deanCard = document.querySelector('.dean-message-card');
+            deanCard.style.opacity = '0';
+            deanCard.style.transform = 'translateY(15px)';
+
+            setTimeout(() => {
+                deanCard.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                deanCard.style.opacity = '1';
+                deanCard.style.transform = 'translateY(0)';
+            }, 500);
+
+            // Animate dean image
+            const deanImg = document.querySelector('.dean-img');
+            deanImg.style.opacity = '0';
+            deanImg.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                deanImg.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                deanImg.style.opacity = '1';
+                deanImg.style.transform = 'scale(1)';
+            }, 700);
+
+            // Animate stat cards on scroll
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(15px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100 + 300);
+            });
+
+            // Animate reunion list items
+            const reunionItems = document.querySelectorAll('.reunion-list-item');
+            reunionItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-15px)';
+
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 100 + 800);
+            });
+
+            // Animate event cards
+            const eventCards = document.querySelectorAll('.event-card');
+            eventCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100 + 1000);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                alert(`Searching for: "${this.value}"`);
+                this.value = '';
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 992) {
+                sidebar.classList.remove('active');
+                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Improved scroll behavior for events container
+        const eventsContainer = document.querySelector('.events-container');
+        if (eventsContainer) {
+            eventsContainer.addEventListener('wheel', function (e) {
+                if (this.scrollHeight > this.clientHeight) {
+                    e.stopPropagation();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
